@@ -1,54 +1,65 @@
+import os
 import discord
 import random
 from discord.ext import commands
+from modules import AIOHTTP
 
-client = commands.Bot(command_prefix = '!')
+
+
+
+bot = commands.Bot(command_prefix = '!')
 TOKEN = "OTI3NzY5OTcyNTc3NTU4NjE5.YdPDHg.ZEMZfr3a1-b6QbfVvrjl1Qja2Fw"
 
-@client.command()
+bot.requests = AIOHTTP(timeout=5)
+
+
+@bot.command()
 async def load(ctx, extension):
-    client.load_extension(f'cogs.{extension}')
+    bot.load_extension(f'cogs.{extension}')
     print(f'{extension} has loaded.')
 
-@client.command()
+@bot.command()
 async def unload(ctx, extension):
-    client.unload_extension(f'cogs.{extension}')
+    bot.unload_extension(f'cogs.{extension}')
     print(f'{extension} has been unloaded.')
 
-@client.command()
+@bot.command()
 async def reload(ctx, extension):
-    client.unload_extension(f'cogs.{extension}')
-    client.load_extension(f'cogs.{extension}')
+    bot.unload_extension(f'cogs.{extension}')
+    bot.load_extension(f'cogs.{extension}')
     print(f'{extension} has reloaded.')
 
 for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):
-        client.load_extension(f'cogs.{filename[:-3]}')
+        bot.load_extension(f'cogs.{filename[:-3]}')
+# @bot.command()
+# async def search(ctx, *, search_term, ammount=5):
+#         print(f"https://gurgle.nathaniel-fernandes.workers.dev/?q={qoute(search_term)}")
 
-@client.event
+@bot.event
 async def on_ready():
     print('Bot is now active')
 
-@client.event 
+@bot.event 
 async def on_message(message):
-    if message.author == client.user:
+    if message.author == bot.user:
         return
     user = message.author
     msg = message.content
     print(f"{user} said {msg}")
 
-    await client.process_commands(message)
+    await bot.process_commands(message)
 
-# @client.event
+# @bot.event
 # async def on_message_delete(message):
 #     await message.channel.send("There was a message deleted here")
     
 
-# @client.command()
+# @bot.command()
 # async def ping(ctx):
 #     await ctx.send('Pong!')
 
-# @client.command(aliases =['8ball'])
+# @bot.command(aliases =['8ball'])
 # async def _8ball(ctx, *, question):
 #     responses = ['It is certain.',
 #     'It is decidedly so.',
@@ -72,23 +83,23 @@ async def on_message(message):
 #     'Very doubtful.']
 #     await ctx.send(f'Question: {question}\nAnswer: {random.choice(responses)}')
 
-# @client.command()
+# @bot.command()
 # async def clear(ctx, amount=5):
 #     await ctx.channel.purge(limit=amount)
 
-# @client.command(aliases=['echo'])
+# @bot.command(aliases=['echo'])
 # async def say(ctx, *, words):
 #     await ctx.send(words)
 
-# @client.command()
+# @bot.command()
 # async def kick(ctx, member : discord.Member, *, reason=None):
 #     await member.kick(reason=reason)
 
-# @client.command()
+# @bot.command()
 # async def ban(ctx, member : discord.Member, *, reason=None):
 #     await member.ban(reason=reason)
 
-# @client.command()
+# @bot.command()
 # async def unban(ctx, *, member):
 #     banned_users = await ctx.guild.bans()
 #     member_name, member_discriminator = member.split('#')
@@ -101,5 +112,5 @@ async def on_message(message):
 #             await ctx.send(f'Unbanned {user.mention}')
 #             return
 
-client.run('OTI3NzY5OTcyNTc3NTU4NjE5.YdPDHg.ZEMZfr3a1-b6QbfVvrjl1Qja2Fw')
+bot.run('OTI3NzY5OTcyNTc3NTU4NjE5.YdPDHg.ZEMZfr3a1-b6QbfVvrjl1Qja2Fw')
 

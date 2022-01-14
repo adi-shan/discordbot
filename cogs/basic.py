@@ -1,12 +1,14 @@
 import discord
 from discord.ext import commands
 import random
+from urllib.parse import quote
+invis = 0x2F3136
 
 
 class Basic(commands.Cog):
 
-    def __init__(self, client):
-        self.client = client
+    def __init__(self, bot):
+        self.bot = bot
     
     #Events
     @commands.Cog.listener()
@@ -20,7 +22,7 @@ class Basic(commands.Cog):
         await ctx.send('Pong!')
     
     @commands.command(aliases=['8ball'])
-    async def _8ball(self, ctx, *, question):
+    async def eightball(self, ctx, *, question):
         responses = ['It is certain.',
         'It is decidedly so.',
         'Without a doubt.',
@@ -72,5 +74,52 @@ class Basic(commands.Cog):
                 await ctx.send(f'Unbanned {user.mention}')
                 return
 
-def setup(client):
-    client.add_cog(Basic(client))
+    @commands.command()
+    async def search(self, ctx, *, content: commands.clean_content):
+
+        number = 1
+        if "," in content:
+            stuff = content.split(",")
+            content = ",".join(stuff[:-1])
+            number = max(
+                min(int(stuff[-1].strip()) if stuff[-1].strip().isdigit() else 1, 10), 1
+            )
+
+    
+        links = await self.bot.requests.get_json(f"https://gurgle.nathaniel-fernandes.workers.dev/?q={quote(content)}")
+        if links is None or len(links) == 0:
+            return await ctx.embed(title= 'No results found.')
+
+
+        if len(links) == 0:
+            return await ctx.embed(title="No Results Found!", color=invis)
+
+        i = 0
+        sent = False
+        for link in links:
+            if i == number:
+                break
+
+            # if await self.client.ahttp.is_media(link): THIS IS FOR MORE STRICT
+            i += 1
+            sent = True
+            await ctx.embed(
+                image_url=link, footer={"text": f"search term: {content}"}, color=invis
+            )
+
+        if not sent:
+            return await ctx.embed(title="No Results Found!", color=invis)
+
+            
+
+
+
+    @commands.command()
+    async def drake(self, ctx, *, content: commands.clean_content):
+        stuff = content.split(',')
+        first = stuff[0]
+        second = stuff[1].strip() if len(stuff) == 2 else ''
+        await ctx.embed(image_url = f"https://mime.rcp.r9n.co/memes/drake?nah={quote(first)}&yeah={quote(second)}")
+
+def setup(bot):
+    bot.add_cog(Basic(bot))
