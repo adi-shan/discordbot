@@ -52,8 +52,8 @@ class Meme(commands.Cog):
     async def handshake(self, ctx, *, content: commands.clean_content):
         stuff = content.split(',')
         first = stuff[0]
-        second = stuff[1].strip() if len(stuff) <= 3 else ''
-        third = stuff[2].strip() if len(stuff) <= 3 else ''
+        second = stuff[1].strip() if len(stuff) == 2 else ''
+        third = stuff[2].strip() if len(stuff) == 3 else ''
         await ctx.embed(image_url = f"https://mime.rcp.r9n.co/memes/epichandshake?left={quote(first)}&right={quote(second)}&middle={quote(third)}")
     
     @commands.command()
@@ -79,10 +79,12 @@ class Meme(commands.Cog):
     async def naruto(self, ctx, *, content: commands.clean_content):
         stuff = content.split(',')
         first = stuff[0]
-        second = stuff[1].strip() if len(stuff) <= 3 else ''
-        third = stuff[2].strip() if len(stuff) <= 3 else ''
+        second = stuff[1].strip() if len(stuff) == 2 else ''
+        third = stuff[2].strip() if len(stuff) == 3 else ''
         await ctx.embed(image_url = f"https://mime.rcp.r9n.co/memes/narutohandshake?left={quote(first)}&right={quote(second)}&bottom={quote(third)}")
     
+    
+
     @commands.command()
     async def pikachu(self, ctx, *, content: commands.clean_content):
         await ctx.embed(image_url = f"https://mime.rcp.r9n.co/memes/pikachu?text={quote(content)}")

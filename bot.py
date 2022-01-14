@@ -9,7 +9,7 @@ from modules import AIOHTTP
 
 load_dotenv()
 
-bot = commands.Bot(command_prefix = '!')
+bot = commands.Bot(command_prefix = '$')
 
 bot.requests = AIOHTTP(timeout=5)
 
