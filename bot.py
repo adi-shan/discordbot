@@ -2,10 +2,12 @@ import os
 import discord
 import random
 from discord.ext import commands
+from dotenv import load_dotenv
+
+
 from modules import AIOHTTP
 
-
-
+load_dotenv()
 
 bot = commands.Bot(command_prefix = '!')
 
@@ -111,5 +113,5 @@ async def on_message(message):
 #             await ctx.send(f'Unbanned {user.mention}')
 #             return
 
-bot.run('OTI3NzY5OTcyNTc3NTU4NjE5.YdPDHg.tmCUDmQQgr4WmXACOufchbs3NDI')
+bot.run(os.environ.get('TOKEN'))
 

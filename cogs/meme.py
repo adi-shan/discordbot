@@ -103,4 +103,5 @@ class Meme(commands.Cog):
     async def boys(self, ctx, *, content: commands.clean_content):
         await ctx.embed(image_url = f"https://mime.rcp.r9n.co/memes/theboys?text={quote(content)}")
 
-    
+def setup(bot):
+    bot.add_cog(Meme(bot))
