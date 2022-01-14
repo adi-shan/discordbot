@@ -1,6 +1,9 @@
+from textwrap import fill
 import discord
 from discord.ext import commands
 import random
+
+from modules import MultiString
 from urllib.parse import quote
 invis = 0x2F3136
 
@@ -11,34 +14,31 @@ class Meme(commands.Cog):
         self.bot = bot
     
     @commands.command()
-    async def drake(self, ctx, *, content: commands.clean_content):
-        stuff = content.split(',')
-        first = stuff[0]
-        second = stuff[1].strip() if len(stuff) == 2 else ''
-        await ctx.embed(image_url = f"https://mime.rcp.r9n.co/memes/drake?nah={quote(first)}&yeah={quote(second)}")
+    async def drake(self, ctx, *, content: MultiString(n=2, fill_missing=True)):
+        await ctx.embed(image_url = f"https://mime.rcp.r9n.co/memes/drake?nah={quote(content[0])}&yeah={quote(content[1])}")
 
     @commands.command()
-    async def metaverse(self, ctx, *, content: commands.clean_content):
-        await ctx.embed(image_url = f"https://mime.rcp.r9n.co/memes/metaverse?text={quote(content)}")
+    async def metaverse(self, ctx, *, content: MultiString(n=1)):
+        await ctx.embed(image_url = f"https://mime.rcp.r9n.co/memes/metaverse?text={quote(content[0])}")
     
     @commands.command()
-    async def achievement(self, ctx, *, content: commands.clean_content):
-        await ctx.embed(image_url = f"https://mime.rcp.r9n.co/memes/achievement?text={quote(content)}")
+    async def achievement(self, ctx, *, content: MultiString(n=1)):
+        await ctx.embed(image_url = f"https://mime.rcp.r9n.co/memes/achievement?text={quote(content[0])}")
 
     @commands.command()
     async def cantread(self, ctx, *, content: commands.clean_content):
-        await ctx.embed(image_url = f"https://mime.rcp.r9n.co/memes/cantread?text={quote(content)}")
+        await ctx.embed(image_url = f"https://mime.rcp.r9n.co/memes/cantread?text={quote(content[0])}")
 
     @commands.command()
     async def chaddoge(self, ctx, *, content: commands.clean_content):
         stuff = content.split(',')
         first = stuff[0]
         second = stuff[1].strip() if len(stuff) == 2 else ''
-        await ctx.embed(image_url = f"https://mime.rcp.r9n.co/memes/chaddoge?chad={quote(first)}&virgin={quote(second)}")
+        await ctx.embed(image_url = f"https://mime.rcp.r9n.co/memes/chaddoge?chad={quote(content[0])}&virgin={quote(content[1])}")
 
     @commands.command()
     async def changemymind(self, ctx, *, content: commands.clean_content):
-        await ctx.embed(image_url = f"https://mime.rcp.r9n.co/memes/changemymind?text={quote(content)}")
+        await ctx.embed(image_url = f"https://mime.rcp.r9n.co/memes/changemymind?text={quote(content[0])}")
 
     @commands.command()
     async def doggo(self, ctx, *, content: commands.clean_content):

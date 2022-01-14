@@ -1,3 +1,4 @@
+import re
 import os
 import discord, functools
 import random, asyncio
@@ -239,3 +240,99 @@ def to_async(syncfunc):
         return await loop.run_in_executor(None, func)
 
     return sync_wrapper
+
+
+class MultiString(commands.Converter):
+    def __init__(
+        self,
+        n=2,
+        require=False,
+        fill_missing=False,
+    ):
+        self.n = n
+        self.require = require
+        self.fill_missing = fill_missing
+
+    async def convert(self, ctx: commands.Context, argument: str):
+        args = argument.replace(", ", ",").replace(" ,", ",").split(",")
+        if not isinstance(args, list):
+            args = [args]
+
+        args = args[: self.n]
+        if not self.fill_missing:
+            if self.require and len(args) != self.n:
+                raise commands.UserInputError()
+        else:
+            diff = self.n - len(args)
+            args += ["" for _ in range(diff)]
+
+        parsed = []
+        for arg in args:
+            parsed.append(
+                await commands.clean_content(
+                    use_nicknames=True, fix_channel_mentions=True
+                ).convert(ctx, arg)
+            )
+
+        return parsed[: self.n]
+
+class RichString(commands.Converter):
+    def __init__(
+        self,
+        n=2,
+        require=False,
+    ):
+        self.n = n
+        self.require = require
+        self.re_member = re.compile(r"(<@!?\d+>)")
+        self.re_emoji = re.compile(r"(<a?:\w+:?\d+>)")
+
+    async def convert(self, ctx: commands.Context, argument: str):
+        find_member = lambda s: self.re_member.findall(s)
+        find_emoji = lambda s: self.re_emoji.findall(s)
+
+        converters = (
+            (find_member, commands.MemberConverter(), 0),
+            (find_emoji, commands.PartialEmojiConverter(), 1),
+        )
+
+        args = argument.replace(", ", ",").replace(" ,", ",").split(",")
+        if not isinstance(args, list):
+            args = [args]
+
+        args = args[: self.n]
+        if self.require and len(args) != self.n:
+            raise commands.UserInputError()
+
+        parsed = []
+        for arg in args:
+            added = False
+            for pack in converters:
+                search, converter, _ = pack
+                found = search(arg)
+                if found and (arg.strip() == found[0]):
+                    obj = await converter.convert(ctx=ctx, argument=found[0])
+                    if obj:
+                        parsed.append(obj)
+                        added = True
+                        break
+
+            if not added:
+                parsed.append(
+                    await commands.clean_content(
+                        use_nicknames=True, fix_channel_mentions=True
+                    ).convert(ctx, arg)
+                )
+
+        return [
+            (
+                "string" if s else "image",
+                arg
+                if s
+                else str(arg.avatar.url_as(format="png", static_format="png", size=512))
+                if isinstance(arg, discord.Member)
+                else arg.url,
+            )
+            for arg in parsed[: self.n]
+            if (s := isinstance(arg, str)) or True
+        ]
