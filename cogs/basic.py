@@ -11,9 +11,9 @@ class Basic(commands.Cog):
         self.bot = bot
     
     #Events
-    @commands.Cog.listener()
-    async def on_ready(self):
-        print('Bot is online.')
+    # @commands.Cog.listener()
+    # async def on_ready(self):
+    #     print('Bot is online.')
 
 
     #Commands
@@ -110,16 +110,6 @@ class Basic(commands.Cog):
         if not sent:
             return await ctx.embed(title="No Results Found!", color=invis)
 
-            
-
-
-
-    @commands.command()
-    async def drake(self, ctx, *, content: commands.clean_content):
-        stuff = content.split(',')
-        first = stuff[0]
-        second = stuff[1].strip() if len(stuff) == 2 else ''
-        await ctx.embed(image_url = f"https://mime.rcp.r9n.co/memes/drake?nah={quote(first)}&yeah={quote(second)}")
-
+    
 def setup(bot):
     bot.add_cog(Basic(bot))
