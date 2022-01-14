@@ -8,7 +8,6 @@ from modules import AIOHTTP
 
 
 bot = commands.Bot(command_prefix = '!')
-TOKEN = "OTI3NzY5OTcyNTc3NTU4NjE5.YdPDHg.ZEMZfr3a1-b6QbfVvrjl1Qja2Fw"
 
 bot.requests = AIOHTTP(timeout=5)
 
@@ -112,5 +111,5 @@ async def on_message(message):
 #             await ctx.send(f'Unbanned {user.mention}')
 #             return
 
-bot.run('OTI3NzY5OTcyNTc3NTU4NjE5.YdPDHg.ZEMZfr3a1-b6QbfVvrjl1Qja2Fw')
+bot.run('OTI3NzY5OTcyNTc3NTU4NjE5.YdPDHg.tmCUDmQQgr4WmXACOufchbs3NDI')
 
